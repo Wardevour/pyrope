@@ -10,7 +10,7 @@ Decoding is done as far as possible, although there may always be new objects ad
 
 ## Setup
 Grab the source from this git and run
-setup.py install 
+setup.py install
 Note: That's totally untested and until further notice here, shit may break. In case of doubt just copy pyrope to your project root
 
 # Usage
@@ -86,6 +86,14 @@ with open(filename+'/metadata.json', 'w', encoding='utf-8') as outfile:
     outfile.write(replay.metadata_to_json())
 ```
 The parsed Netstream file can get quite large. Keep that in mind when trying to view it in your preferred editor.
+
+# Tests
+
+You can run the tests with
+
+```
+python -W ignore -m unittest discover
+```
 
 # License
 This Project is published under GNU GPL v3.0
