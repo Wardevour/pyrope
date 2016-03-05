@@ -35,7 +35,7 @@ class Replay:
         self.names = None
         self.class_index_map = None
         self.netcache = None
-        self._replay = bitstring.ConstBitStream(filename=path)
+        self._replay = bitstring.ConstBitStream(path)
         self._parse_meta()
         self._parse_header()
 
