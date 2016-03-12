@@ -223,6 +223,10 @@ class Replay:
         frames = OrderedDict()
         self._netstream_raw.pos = 0
         propertymapper = PropertyMapper(self.netcache)
+
+        if 'NumFrames' not in self.header:
+            return frames
+
         for i in range(self.header['NumFrames']):
             if ev_stop and ev_stop.is_set():
                 return None
