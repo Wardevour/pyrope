@@ -173,7 +173,9 @@ class Replay:
                     break  # On to the next cache
                 else:
                     next_cache_index += 1
-        return cachelist[-1]
+        if len(cachelist) > 0:
+            return cachelist[-1]
+        return
 
     def _decode_properties(self, bitstream):
         properties = {}
