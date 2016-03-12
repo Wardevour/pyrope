@@ -34,17 +34,18 @@ class Frame:
             actorid = reverse_bytewise(netstream.read('bits:10')).uintle
             channel = netstream.read(BOOL)
             if not channel:
-                try:
-                    shorttype = str(actorid) + 'd' + '_'
-                    shorttype += self._actor_alive[actorid].split('.')[-1].split(':')[-1]
-                    actors[shorttype] = {'startpos': startpos,
-                                         'actor_id': actorid,
-                                         'actor_type': self._actor_alive[actorid],
-                                         'open': channel}
-                    del self._actor_alive[actorid]
-                except KeyError:
-                    raise FrameParsingError("Tried to delete non existent actor", actors)
-                continue
+                if actorid in self._actor_alive:
+                    try:
+                        shorttype = str(actorid) + 'd' + '_'
+                        shorttype += self._actor_alive[actorid].split('.')[-1].split(':')[-1]
+                        actors[shorttype] = {'startpos': startpos,
+                                             'actor_id': actorid,
+                                             'actor_type': self._actor_alive[actorid],
+                                             'open': channel}
+                        del self._actor_alive[actorid]
+                    except KeyError:
+                        raise FrameParsingError("Tried to delete non existent actor", actors)
+                    continue
 
             new = netstream.read(BOOL)
             try:
@@ -52,9 +53,14 @@ class Frame:
                     type_name, data = self._parse_new_actor(netstream, objects)
                     self._actor_alive[actorid] = type_name
                 else:
-                    data = self._parse_existing_actor(netstream,
-                                                      self._actor_alive[actorid],
-                                                      objects, propertymapper)
+                    if actorid in self._actor_alive:
+                        data = self._parse_existing_actor(
+                            netstream,
+                            self._actor_alive[actorid],
+                            objects,
+                            propertymapper
+                        )
+
             except (PropertyParsingError, KeyError) as e:
                 e.args += ({'CurrFrameActors': actors},)
                 try:
@@ -68,18 +74,23 @@ class Frame:
                 shorttype = str(actorid) + 'n' + '_'
                 shorttype += self._actor_alive[actorid].split('.')[-1].split(':')[-1]
             else:
-                shorttype = str(actorid) + 'e' + '_'
-                shorttype += self._actor_alive[actorid].split('.')[-1].split(':')[-1]
-            actors[shorttype] = {
-                'startpos': startpos,
-                'actor_id': actorid,
-                'actor_type': self._actor_alive[actorid],
-                'new': new,
-                'data': data}
+                if actorid in self._actor_alive:
+                    shorttype = str(actorid) + 'e' + '_'
+                    shorttype += self._actor_alive[actorid].split('.')[-1].split(':')[-1]
+
+            if actorid in self._actor_alive:
+                actors[shorttype] = {
+                    'startpos': startpos,
+                    'actor_id': actorid,
+                    'actor_type': self._actor_alive[actorid],
+                    'new': new,
+                    'data': data
+                }
         return actors
 
     def _parse_existing_actor(self, netstream, actor_type, objects, propertymapper):
         properties = {}
+
         while netstream.read(BOOL):
             property_id = read_serialized_int(netstream,
                                               propertymapper.get_property_max_id(actor_type))
