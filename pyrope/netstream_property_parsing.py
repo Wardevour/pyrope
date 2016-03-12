@@ -197,10 +197,8 @@ def _read_unique_id(bitstream):
 
 
 def _read_rotation(bitstream):
-    flag = bitstream.read(BOOL)
     rotation = read_float_vector(bitstream)
     return {
-        'flag': flag,
         'rotation': rotation,
     }
 
