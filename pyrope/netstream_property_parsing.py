@@ -101,6 +101,7 @@ parsing = {
 
     # S.P.E.C.I.A.L
     "TAGame.RBActor_TA:ReplicatedRBState": lambda x: _read_rigid_body_state(x),
+    "Engine.Actor:RelativeRotation": lambda x: _read_rotation(x),
     "Engine.PlayerReplicationInfo:UniqueId": lambda x: _read_unique_id(x),
     "TAGame.PRI_TA:PartyLeader": lambda x: _read_unique_id(x),
     "TAGame.PRI_TA:CameraSettings": lambda x: _read_cam_settings(x),
@@ -193,6 +194,15 @@ def _read_unique_id(bitstream):
         raise PropertyParsingError('Unknown System ID')
     splitscreen_id = _read_byte(bitstream)
     return system, uid, splitscreen_id
+
+
+def _read_rotation(bitstream):
+    flag = bitstream.read(BOOL)
+    rotation = read_float_vector(bitstream)
+    return {
+        'flag': flag,
+        'rotation': rotation,
+    }
 
 
 def _read_cam_settings(bitstream):
