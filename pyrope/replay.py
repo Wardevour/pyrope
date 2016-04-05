@@ -211,7 +211,7 @@ class Replay:
             value_text = read_string(bitstream)
             property_value = {key_text: value_text}
         elif property_type == 'QWordProperty':
-            property_value = bitstream.read(64).uint
+            property_value = bitstream.read(64).intle
         elif property_type == 'BoolProperty':
             property_value = bitstream.read(8).uint == 1
         else:
