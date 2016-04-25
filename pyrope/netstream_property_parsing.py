@@ -80,6 +80,7 @@ parsing = {
     "TAGame.CarComponent_Boost_TA:bUnlimitedBoost": lambda x: _read_bool(x),
     "Engine.PlayerReplicationInfo:bIsSpectator": lambda x: _read_bool(x),
     "TAGame.GameEvent_Soccar_TA:bBallHasBeenHit": lambda x: _read_bool(x),
+    "TAGame.PRI_TA:bMatchMVP": lambda x: _read_bool(x),
 
     # FLOAT Properties
     "TAGame.CarComponent_FlipCar_TA:FlipCarTime": lambda x: _read_float(x),
