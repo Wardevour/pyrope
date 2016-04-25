@@ -154,12 +154,12 @@ def _read_float(bitstream):
 
 
 def _read_string(bitstream):  # This should be in utils. But its only needed here, so yeah
-    length = _read_int(bitstream)*8
+    length = _read_int(bitstream) * 8
     if length < 0:
         length *= -2
-        return reverse_bytewise(bitstream.read('bits:'+str(length))).bytes[:-2].decode('utf-16')
+        return reverse_bytewise(bitstream.read('bits:' + str(length))).bytes[:-2].decode('utf-16')
 
-    reversed_bytes = reverse_bytewise(bitstream.read('bits:'+str(length))).bytes[:-1]
+    reversed_bytes = reverse_bytewise(bitstream.read('bits:' + str(length))).bytes[:-1]
 
     try:
         return reversed_bytes.decode('utf-8')
@@ -298,9 +298,9 @@ def _read_musicstinger(bitstream):
 
 def _read_private_settings(bitstream):
     mutators = _read_string(bitstream).split(',')
-    unknown_1 = _read_int(bitstream)
-    unknown_2 = _read_int(bitstream)
+    joinableBy = _read_int(bitstream)
+    maxPlayers = _read_int(bitstream)
     name = _read_string(bitstream)
     password = _read_string(bitstream)
     flag = _read_bool(bitstream)
-    return mutators, unknown_1, unknown_2, name, password, flag
+    return mutators, joinableBy, maxPlayers, name, password, flag
