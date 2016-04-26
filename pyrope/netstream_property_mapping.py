@@ -20,7 +20,7 @@ class PropertyMapper:
 
     def _build_prop_for_archtype(self, archtype):
         classname = self._arch_to_class(archtype)
-        result, mapping = self._get_netprops_for_class(self._netcache, classname)
+        result, mapping = self._get_netprops_for_class(classname)
         if not result:
             msg = "Could not find Property Ids for " \
                   "archtype %s with classname %s" % (archtype, classname)
@@ -28,12 +28,18 @@ class PropertyMapper:
         return mapping
 
     def _arch_to_class(self, archname):
-        if archname == 'GameInfo_Soccar.GameInfo.GameInfo_Soccar:GameReplicationInfoArchetype':
-            classname = 'TAGame.GRI_TA'
-        elif archname == 'GameInfo_Season.GameInfo.GameInfo_Season:GameReplicationInfoArchetype':
+        if archname in [
+            'GameInfo_Soccar.GameInfo.GameInfo_Soccar:GameReplicationInfoArchetype',
+            'GameInfo_Season.GameInfo.GameInfo_Season:GameReplicationInfoArchetype',
+            'GameInfo_Basketball.GameInfo.GameInfo_Basketball:GameReplicationInfoArchetype'
+        ]:
             classname = 'TAGame.GRI_TA'
         elif archname == 'Archetypes.GameEvent.GameEvent_Season:CarArchetype':
             classname = 'TAGame.Car_Season_TA'
+        elif archname in ['Archetypes.GameEvent.GameEvent_Basketball', 'Archetypes.GameEvent.GameEvent_BasketballPrivate']:
+            classname = 'TAGame.GameEvent_Soccar_TA'
+        elif archname == 'Archetypes.GameEvent.GameEvent_BasketballSplitscreen':
+            classname = 'TAGame.GameEvent_SoccarSplitscreen_TA'
         elif archname in ['Archetypes.Ball.CubeBall', 'Archetypes.Ball.Ball_Puck', 'Archetypes.Ball.Ball_Basketball']:
             classname = 'TAGame.Ball_TA'
         else:
@@ -45,9 +51,10 @@ class PropertyMapper:
                 .replace("1", "_TA") \
                 .replace("Default__", "")
             classname = '.' + classname
+
         return classname
 
-    def _get_netprops_for_class(self, netcache, classname):
+    def _get_netprops_for_class(self, classname, netcache=None):
         """
         Recursively search netcache Tree for our class. When netcache is found return Mapping of
         each netcache we traversed to that point. The Boolean return is a workaround in case
@@ -55,12 +62,16 @@ class PropertyMapper:
         I'm glad as fuck that shit actually works. I should have used some kind of tree librarie
         here or a defaultdict or whatever. But its a once per classname thing, so yeah
         """
+
+        if netcache is None:
+            netcache = self._netcache
+
         mappings = {}
         for k, v in netcache.items():
             if type(k) == str and classname in k:
                 return True, v['mapping']
             if type(v) == dict and v != 'mappings':
-                result, child_map = self._get_netprops_for_class(v, classname)
+                result, child_map = self._get_netprops_for_class(classname, v)
                 if result:
                     mappings.update(v['mapping'])
                     mappings.update(child_map)

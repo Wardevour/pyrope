@@ -11,8 +11,8 @@ def read_string(bitstream):
     string_len = bitstream.read('intle:32')
     if string_len < 0:
         string_len *= -2
-        return bitstream.read('bytes:'+str(string_len))[:-2].decode('utf-16')
-    stream_bytes = bitstream.read('bytes:'+str(string_len))
+        return bitstream.read('bytes:' + str(string_len))[:-2].decode('utf-16')
+    stream_bytes = bitstream.read('bytes:' + str(string_len))
     string = stream_bytes[:-1]
     assert stream_bytes[-1] == 0, 'String not Zero terminated'
     try:
@@ -54,14 +54,14 @@ def read_serialized_int(bitstream, max_val=19):
 
 def read_serialized_vector(bitstream):
     numbits = read_serialized_int(bitstream)
-    bias = 1 << (numbits+1)
+    bias = 1 << (numbits + 1)
     max_bits = numbits + 2
     dx = reverse_bytewise(bitstream.read(max_bits)).uintle
     dy = reverse_bytewise(bitstream.read(max_bits)).uintle
     dz = reverse_bytewise(bitstream.read(max_bits)).uintle
-    x = dx-bias
-    y = dy-bias
-    z = dz-bias
+    x = dx - bias
+    y = dy - bias
+    z = dz - bias
     return x, y, z
 
 
@@ -99,6 +99,6 @@ def _read_serialized_float(max_value, numbits, bitstream):
         value = unscaled_value * inv_scale
     else:
         scale = max_bit_value / max_value
-        inv_scale = 1.0/scale
+        inv_scale = 1.0 / scale
         value = unscaled_value * inv_scale
     return value

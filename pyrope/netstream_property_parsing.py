@@ -47,6 +47,8 @@ parsing = {
     "TAGame.Vehicle_TA:ReplicatedThrottle": lambda x: _read_byte(x),
     "TAGame.PRI_TA:CameraYaw": lambda x: _read_byte(x),
     "TAGame.PRI_TA:CameraPitch": lambda x: _read_byte(x),
+    "TAGame.CameraSettingsActor_TA:CameraPitch": lambda x: _read_byte(x),
+    "TAGame.CameraSettingsActor_TA:CameraYaw": lambda x: _read_byte(x),
     "TAGame.Ball_TA:HitTeamNum": lambda x: _read_byte(x),
     "TAGame.GameEvent_Soccar_TA:ReplicatedScoredOnTeam": lambda x: _read_byte(x),
     "TAGame.GameEvent_TA:ReplicatedStateIndex": lambda x: _read_byte(x),  # maybe?
@@ -89,7 +91,14 @@ parsing = {
     "TAGame.VehiclePickup_TA:ReplicatedPickupData": lambda x: _read_pickup(x),
     "TAGame.Car_TA:ReplicatedDemolish": lambda x: _read_demolish(x),
     "TAGame.GameEvent_Soccar_TA:ReplicatedMusicStinger": lambda x: _read_musicstinger(x),
-    "TAGame.GameEvent_SoccarPrivate_TA:MatchSettings": lambda x: _read_private_settings(x)
+    "TAGame.GameEvent_SoccarPrivate_TA:MatchSettings": lambda x: _read_private_settings(x),
+
+    # Testing
+    "TAGame.PRI_TA:PersistentCamera": lambda x: _read_flagged_int(x),
+    "TAGame.GameEvent_TA:ReplicatedStateName": lambda x: _read_int(x),
+    "TAGame.CameraSettingsActor_TA:ProfileSettings": lambda x: _read_cam_settings(x),
+    "TAGame.CameraSettingsActor_TA:PRI": lambda x: _read_flagged_int(x),
+    "TAGame.GameEvent_TA:GameMode": lambda x: _read_game_mode(x),
 }
 
 
@@ -105,6 +114,10 @@ def read_property_value(property_name, bitstream):
                 bitstream.read('hex:64')
             ))
     return value
+
+
+def _read_game_mode(bitstream):
+    return bitstream.read('bits:2').uint
 
 
 def _read_flagged_int(bitstream):
@@ -202,7 +215,15 @@ def _read_loadout(bitstream):
 
 
 def _read_loadout_online(bitstream):
-    return _read_int(bitstream), _read_int(bitstream), _read_int(bitstream)
+    version = _read_int(bitstream)
+    x = _read_int(bitstream)
+    y = _read_int(bitstream)
+    z = None
+
+    if version >= 12:
+        z = _read_byte(bitstream)
+
+    return [version, x, y, z]
 
 
 def _read_teampaint(bitstream):
