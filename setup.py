@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pyrope',
-    version='1.0rc1',
+    version='1.0.1',
     packages=['pyrope'],
     url='https://github.com/Galile0/pyrope',
     license='GNU GPL v3.0',
