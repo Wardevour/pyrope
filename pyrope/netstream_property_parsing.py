@@ -53,35 +53,6 @@ parsing = {
     "TAGame.CarComponent_TA:ReplicatedActive": lambda x: _read_byte(x),
     "TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount": lambda x: _read_byte(x),
 
-    # BOOLEAN Properties
-    "Engine.Actor:bCollideWorld": lambda x: _read_bool(x),
-    "Engine.PlayerReplicationInfo:bReadyToPlay": lambda x: _read_bool(x),
-    "TAGame.Vehicle_TA:bReplicatedHandbrake": lambda x: _read_bool(x),
-    "TAGame.Vehicle_TA:bDriving": lambda x: _read_bool(x),
-    "Engine.Actor:bNetOwner": lambda x: _read_bool(x),
-    "Engine.Actor:bBlockActors": lambda x: _read_bool(x),
-    "TAGame.GameEvent_TA:bHasLeaveMatchPenalty": lambda x: _read_bool(x),
-    "TAGame.PRI_TA:bUsingBehindView": lambda x: _read_bool(x),
-    "TAGame.PRI_TA:bUsingSecondaryCamera": lambda x: _read_bool(x),
-    "TAGame.GameEvent_TA:ActivatorCar": lambda x: _read_bool(x),
-    "TAGame.GameEvent_Soccar_TA:bOverTime": lambda x: _read_bool(x),
-    "ProjectX.GRI_X:bGameStarted": lambda x: _read_bool(x),
-    "Engine.Actor:bCollideActors": lambda x: _read_bool(x),
-    "TAGame.PRI_TA:bReady": lambda x: _read_bool(x),
-    "TAGame.RBActor_TA:bFrozen": lambda x: _read_bool(x),
-    "Engine.Actor:bHidden": lambda x: _read_bool(x),
-    "Engine.Actor:bTearOff": lambda x: _read_bool(x),
-    "TAGame.CarComponent_FlipCar_TA:bFlipRight": lambda x: _read_bool(x),
-    "Engine.PlayerReplicationInfo:bBot": lambda x: _read_bool(x),
-    "Engine.PlayerReplicationInfo:bWaitingPlayer": lambda x: _read_bool(x),
-    "TAGame.RBActor_TA:bReplayActor": lambda x: _read_bool(x),
-    "TAGame.PRI_TA:bIsInSplitScreen": lambda x: _read_bool(x),
-    "Engine.GameReplicationInfo:bMatchIsOver": lambda x: _read_bool(x),
-    "TAGame.CarComponent_Boost_TA:bUnlimitedBoost": lambda x: _read_bool(x),
-    "Engine.PlayerReplicationInfo:bIsSpectator": lambda x: _read_bool(x),
-    "TAGame.GameEvent_Soccar_TA:bBallHasBeenHit": lambda x: _read_bool(x),
-    "TAGame.PRI_TA:bMatchMVP": lambda x: _read_bool(x),
-
     # FLOAT Properties
     "TAGame.CarComponent_FlipCar_TA:FlipCarTime": lambda x: _read_float(x),
     "TAGame.Ball_TA:ReplicatedBallScale": lambda x: _read_float(x),
@@ -123,11 +94,16 @@ parsing = {
 
 
 def read_property_value(property_name, bitstream):
-    try:
+    if property_name in parsing:
         value = parsing[property_name](bitstream)
-    except KeyError:
-        raise PropertyParsingError("Dont know how to parse bits for %s Have some raw Bits: %s"
-                                   % (property_name, bitstream.read('hex:64')))
+    elif property_name.split(':')[1][0] == 'b':
+        value = _read_bool(bitstream)
+    else:
+        raise PropertyParsingError(
+            "Dont know how to parse bits for %s Have some raw Bits: %s" % (
+                property_name,
+                bitstream.read('hex:64')
+            ))
     return value
 
 
