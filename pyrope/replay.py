@@ -230,6 +230,7 @@ class Replay:
         for i in range(self.header['NumFrames']):
             if ev_stop and ev_stop.is_set():
                 return None
+
             frame = Frame()
             try:
                 frame.parse_frame(self._netstream_raw, self.objects, propertymapper)

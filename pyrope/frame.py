@@ -1,9 +1,10 @@
 from collections import OrderedDict
 
-from pyrope.netstream_property_parsing import read_property_value, _read_int
-from pyrope.utils import (reverse_bytewise, BOOL, read_serialized_vector,
-                          read_byte_vector, read_serialized_int)
 from pyrope.exceptions import FrameParsingError, PropertyParsingError
+from pyrope.netstream_property_parsing import _read_int, read_property_value
+from pyrope.utils import (BOOL, read_byte_vector, read_int32_max,
+                          read_serialized_int, read_serialized_vector,
+                          reverse_bytewise)
 
 
 class Frame:
@@ -34,7 +35,7 @@ class Frame:
             if not actor_present:
                 break
 
-            actor['id'] = reverse_bytewise(netstream.read('bits:10')).uintle
+            actor['id'] = read_int32_max(netstream, 1023)
 
             channel = netstream.read(BOOL)
 
@@ -69,6 +70,7 @@ class Frame:
                     'open': channel,
                     'data': actor,
                 }
+
             # Deleted (player left the game etc..)
             else:
                 actor = self._parse_deleted_actor(actor, propertymapper)
@@ -92,7 +94,6 @@ class Frame:
 
     def _parse_existing_actor(self, actor, netstream, objects, propertymapper):
         actor['state'] = 'existing'
-        actor['type_id'] = objects[actor['id']]
         actor_type = self._actor_alive[actor['id']]
 
         while netstream.read(BOOL):

@@ -40,6 +40,22 @@ def reverse_byte(x):
     return x
 
 
+def read_int32_max(bitstream, maxValue):
+    maxBits = math.floor(math.log10(maxValue) / math.log10(2)) + 1
+
+    value = 0
+    i = 0
+    while i < maxBits and (value + (1<< i)) < maxValue:
+        value += (1 if bitstream.read(BOOL) else 0) << i
+        i += 1
+
+    if value > maxValue:
+        raise Exception("ReadInt32Max overflowed!");
+
+    return value
+
+
+
 def read_serialized_int(bitstream, max_val=19):
     max_bits = math.ceil(math.log(max_val, 2))
     value = 0
