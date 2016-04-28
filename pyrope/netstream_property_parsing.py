@@ -99,6 +99,7 @@ parsing = {
     "TAGame.CameraSettingsActor_TA:ProfileSettings": lambda x: _read_cam_settings(x),
     "TAGame.CameraSettingsActor_TA:PRI": lambda x: _read_flagged_int(x),
     "TAGame.GameEvent_TA:GameMode": lambda x: _read_game_mode(x),
+    "TAGame.PRI_TA:SkillTier": lambda x: _read_flagged_byte(x),
 }
 
 
@@ -123,6 +124,12 @@ def _read_game_mode(bitstream):
 def _read_flagged_int(bitstream):
     flag = bitstream.read(BOOL)
     num = _read_int(bitstream)
+    return flag, num
+
+
+def _read_flagged_byte(bitstream):
+    flag = bitstream.read(BOOL)
+    num = _read_byte(bitstream)
     return flag, num
 
 
