@@ -19,7 +19,7 @@ Note: That's totally untested and until further notice here, shit may break. In 
 ```python
 from pyrope import Replay
 
-replay = Replay("FILEPATH")
+replay = Replay(open("FILEPATH"))
 replay.parse_netstream()
 ```
 Depending on the size of your Replay file the parse_netstream() will take some time (For full fledged matches roughly one minute)
@@ -31,7 +31,7 @@ from queue import Queue
 
 from pyrope import Replay
 
-replay = Replay("FILEPATH")
+replay = Replay(open("FILEPATH"))
 status = Queue()
 stop = Event()
 thread = Thread(target=replay.parse_netstream, args=(status, stop))
@@ -62,14 +62,14 @@ The parsed replay is a dictionary of Frames, in the form {FrameNumber: FrameCont
 ```python
 from pyrope import Replay
 
-replay = Replay("FILEPATH")
+replay = Replay(open("FILEPATH"))
 replay.parse_netstream()
-for num, content replay.netstream.items():
+for num, content in replay.netstream.items():
     print("Frame %d" % num)
     print("Actors:")
-    for shortname, actor_data in content.items():
+    for shortname, actor_data in content.actors.items():
         print("\tShortname: %s" % shortname)
-        print("\tPropertys: %s" % content['data']
+        print("\tPropertys: %s" % actor_data)
 ```
 This will print all Frames with their actors and the Propertys of each actor (Note: You may want to pipe that output since a frame usually lasts 0.04 seconds and a match takes 5 Minutes = 300 seconds = 7500 frames with up to a few dozen actors per frame, and each actor with a handful of propertys. Thats alot of data).
 
@@ -77,7 +77,7 @@ At the time of writing this I have not documented the produced dictionary struct
 ```python
 from pyrope import Replay
 
-replay = Replay("FILEPATH")
+replay = Replay(open("FILEPATH"))
 replay.parse_netstream()
 with open('/netstream.json', 'w', encoding='utf-8') as outfile:
     outfile.write(replay.netstream_to_json())
