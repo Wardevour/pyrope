@@ -10,7 +10,7 @@ Decodes Rocket League replay headers
 
 ## Setup
 ```
-git+https://github.com/danielsamuels/pyrope.git
+git+https://github.com/rocket-league-replays/pyrope.git
 ```
 
 # Usage
