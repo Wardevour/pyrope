@@ -39,26 +39,12 @@ class TestReplayParser(unittest.TestCase):
         replay = Replay('{}2.replay'.format(self.folder_path))
         self.assertEqual(replay.header['Id'], '6790915F4216FEC5E6EBB089D3BA6FF0')
 
-        self.assertIsNone(replay.netstream)
-
-        # Parse the network data.
-        replay.parse_netstream()
-
-        self.assertIsNotNone(replay.netstream)
-
     def test_replay_3(self):
         # Replay ID: 010D2D7944D262BC2AAF2FA5DD23AA6E
         # Related issue: https://github.com/Galile0/pyrope/issues/7
         # Issue description: KeyError when parsing netstream.
         replay = Replay('{}3.replay'.format(self.folder_path))
         self.assertEqual(replay.header['Id'], '010D2D7944D262BC2AAF2FA5DD23AA6E')
-
-        self.assertIsNone(replay.netstream)
-
-        # Parse the network data.
-        replay.parse_netstream()
-
-        self.assertIsNotNone(replay.netstream)
 
     def test_replay_4(self):
         # Replay ID: 512256CE4C695326BB8E5AAA4680A293
@@ -67,12 +53,6 @@ class TestReplayParser(unittest.TestCase):
         replay = Replay('{}4.replay'.format(self.folder_path))
         self.assertEqual(replay.header['Id'], '512256CE4C695326BB8E5AAA4680A293')
 
-        self.assertIsNone(replay.netstream)
-
-        # Parse the network data.
-        replay.parse_netstream()
-
-        self.assertIsNotNone(replay.netstream)
 
     def test_replay_5(self):
         # Replay ID: 772810F44196DADD653608A44146D167
@@ -88,12 +68,6 @@ class TestReplayParser(unittest.TestCase):
         replay = Replay('{}6.replay'.format(self.folder_path))
         self.assertEqual(replay.header['Id'], '9A93C12646BB2517DFCE19B514B85CA8')
 
-        self.assertIsNone(replay.netstream)
-
-        # Parse the network data.
-        replay.parse_netstream()
-
-        self.assertIsNotNone(replay.netstream)
 
     def test_replay_7(self):
         # Replay ID: 6B111DEA41797216FFA7D3B01B225006
@@ -102,9 +76,9 @@ class TestReplayParser(unittest.TestCase):
         replay = Replay('{}7.replay'.format(self.folder_path))
         self.assertEqual(replay.header['Id'], '6B111DEA41797216FFA7D3B01B225006')
 
-        self.assertIsNone(replay.netstream)
-
-        # Parse the network data.
-        replay.parse_netstream()
-
-        self.assertIsNotNone(replay.netstream)
+    def test_replay_8(self):
+        # Replay ID: 00090006000500070021021B99DF8BA2
+        # Related issue: https://github.com/tfausak/rattletrap/issues/40
+        # Issue description: Anniversary edition changed the header
+        replay = Replay('{}8.replay'.format(self.folder_path))
+        self.assertEqual(replay.header['Id'], '00090006000500070021021B99DF8BA2')

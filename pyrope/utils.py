@@ -9,12 +9,15 @@ BOOL = 'bool'
 
 def read_string(bitstream):
     string_len = bitstream.read('intle:32')
+
     if string_len < 0:
         string_len *= -2
         return bitstream.read('bytes:' + str(string_len))[:-2].decode('utf-16')
     stream_bytes = bitstream.read('bytes:' + str(string_len))
     string = stream_bytes[:-1]
+
     assert stream_bytes[-1] == 0, 'String not Zero terminated'
+
     try:
         return string.decode('utf-8')
     except UnicodeDecodeError:
