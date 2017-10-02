@@ -45,7 +45,11 @@ class Replay:
             # Old replay, back it up.
             self._replay.pos -= 32
 
-        assert read_string(self._replay) == 'TAGame.Replay_Soccar_TA'
+        try:
+            assert read_string(self._replay) == 'TAGame.Replay_Soccar_TA'
+        except AssertionError:
+            self._replay.pos -= 16
+            assert read_string(self._replay) == 'TAGame.Replay_Soccar_TA'
 
         self._header_raw = self._replay.read((header_size - 8) * 8)
         return True
