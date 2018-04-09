@@ -29,6 +29,8 @@ class Replay:
             with open(path, 'rb') as f:
                 self._replay = bitstring.ConstBitStream(f.read())
 
+        assert hasattr(self, '_replay')
+
         self._parse_meta()
         self._parse_header()
 
@@ -41,7 +43,10 @@ class Replay:
         assert int(self._replay.pos / 8) == 16
         check_bytes = self._replay.read('bytes:4')
 
-        if (check_bytes != b'\x00\x00\x00\x00'):
+        if check_bytes == b'\x05\x00\x00\x00':
+            # continue onwards
+            pass
+        elif check_bytes != b'\x00\x00\x00\x00':
             # Old replay, back it up.
             self._replay.pos -= 32
 
